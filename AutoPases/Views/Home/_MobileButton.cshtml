@@ -1,0 +1,30 @@
+﻿@using AutoPases.Models
+@model List<ModProyectosActivos>
+
+
+@{
+    ViewBag.Title = "Monibyte Deployment";
+}
+
+<div class="switch-section">
+    <div class="settings-head">MONIBYTE DEPLOY MANAGER</div>
+    <ul>
+        @foreach(var item in Model)
+        {
+        <li>@item.Proyecto <input type="checkbox" id="@item.Proyecto " aria-label="Notifications Switch" /></li>
+        }
+    </ul>
+</div>
+
+
+<script>
+    $(function () {
+        var jsonObj = { checked: false };
+        var jsonData = JSON.stringify("@Model");
+
+        $.each(jsonData, function (index, value) {
+            $("#"+value.Proyecto).kendoMobileSwitch(jsonObj);
+        });
+
+    });
+</script>

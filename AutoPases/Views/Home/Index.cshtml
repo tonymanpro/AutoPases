@@ -1,0 +1,219 @@
+﻿@using AutoPases.Models
+@model List<ModProyectosActivos>
+
+@{
+    ViewBag.Title = "Monibyte Deployment";
+    var entitys = Model.GroupBy(x => x.Entidad);
+}
+
+<style>
+    .navbar-inverse {
+        background-color: #222222;
+        border-color: #080808;
+        width: 100%;
+        width: 100%;
+        left: 0;
+        top: 0px;
+        position: absolute;
+    }
+</style>
+
+<script>
+    $(function () {
+        var jsonObj = { checked: false };
+        $("#CoreCR-switch").kendoMobileSwitch(jsonObj);
+        $("#TransacCR-switch").kendoMobileSwitch(jsonObj);
+        $("#AdminCR-switch").kendoMobileSwitch(jsonObj);
+        $("#CierresCR-switch").kendoMobileSwitch(jsonObj);
+        $("#OperacionCR-switch").kendoMobileSwitch(jsonObj);
+    });
+
+    $(document).ready(function () {
+        kendoConsole.log("Starting ...");
+
+        $("span.k-switch").on("click", function () {
+            var inputID = $(this).find("input[type='checkbox']").attr("id");
+            var inputRefrence = inputID.split("-")[0];
+            var switchInstance = $("#" + inputID).data("kendoMobileSwitch");
+            var statusValue = switchInstance.check();
+            if (!statusValue) {
+                kendoConsole.log("Getting ::" + inputRefrence + " Stages");
+               $monibyte.executeAjax({
+                    actionUrl: "@Url.Action("GetTreeView")",
+                    jsonData: {
+                        viewID: inputRefrence
+                    },
+                    targetId: "treeviewContent"
+                });
+            }
+        });
+    });
+
+    function GCloudDownload() {
+        $monibyte.executeAjax({
+            actionUrl: "@Url.Action("GCloudDownloadAsyn")",
+            jsonData: { command: "ping 10.80.1.46" }, //{ command: "gsutil cp gs://Travis_CI/CoreCR Desktop"},
+             callback: function (data) {
+                if (data.result) {
+                    kendoConsole.specialEvent("*** GCloud Download Successful ***");
+                    kendoConsole.log(data.response);
+                    checkManager("GCloud Download", true)
+                    StopSite();
+                }
+            },
+            error: function pruebaError() {
+                kendoConsole.error("GCloud Download Error");
+            }
+        });
+    }
+
+    function StopSite() {
+        $monibyte.executeAjax({
+            actionUrl: "@Url.Action("StopSiteAsyn")",
+            callback: function (data) {
+                if (data) {
+                    kendoConsole.specialEvent("*** Stop Site Successful ***");
+                    checkManager("Stop Site", true)
+                    CreateBackUp();
+                }
+            },
+            error: function pruebaError() {
+                kendoConsole.error("Stop Site Error");
+            }
+        });
+    }
+    function CreateBackUp() {
+        $monibyte.executeAjax({
+            actionUrl: "@Url.Action("CreateBackUpAsyn")",
+            callback: function (data) {
+                if (data) {
+                    kendoConsole.specialEvent("*** Create BackUp Successful ***");
+                    checkManager("Create BackUp", true)
+                    PublishSite();
+                }
+            },
+            error: function pruebaError(error) {
+                kendoConsole.error(error.response);
+                kendoConsole.error("Create BackUp Error");
+            }
+        });
+    }
+    function PublishSite() {
+        $monibyte.executeAjax({
+            actionUrl: "@Url.Action("PublishSiteAsyn")",
+            callback: function (data) {
+                if (data) {
+                    kendoConsole.specialEvent("*** Publish Site Successful ***");
+                    checkManager("Publish Site", true)
+                    StartSite();
+                }
+            },
+            error: function pruebaError(error) {
+                kendoConsole.error(error.response);
+                kendoConsole.error("Publish Site Error");
+            }
+        });
+    }
+    function StartSite(dataItem) {
+        $monibyte.executeAjax({
+            actionUrl: "@Url.Action("StartSiteAsyn")",
+            jsonData: dataItem,
+            callback: function (data) {
+                if (data) {
+                    kendoConsole.specialEvent("*** Start Site Successful ***");
+                    checkManager("Start Site", true)
+                }
+            },
+            error: function pruebaError() {
+                kendoConsole.error("Start Site Error");
+            }
+        });
+    }
+</script>
+
+<nav class="navbar navbar-inverse">
+<div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-9">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
+        <ul class="nav navbar-nav">
+            @foreach (var item in entitys)
+            {
+            <li class="active">@Html.ActionLink(item.First().Entidad, 
+                              "Index", "Home",new { @value = item.First().Entidad })</li>
+            }
+        </ul>
+    </div><!-- /.navbar-collapse -->
+</div><!-- /.container-fluid -->
+    </nav>
+
+<div class="col-xs-5">
+    <div class="switch-section">
+        <div class="settings-head">MONIBYTE DEPLOY MANAGER</div>
+        <ul>
+            <li>Core Costa Rica <input type="checkbox" id="CoreCR-switch" aria-label="Notifications Switch" /></li>
+            <li>Transac Costa Rica <input type="checkbox" id="TransacCR-switch" aria-label="Mail Switch" /></li>
+            <li>Admin Costa Rica <input type="checkbox" id="AdminCR-switch" aria-label="Visible Switch" /></li>
+            <li>Cierres Costa Rica <input type="checkbox" id="CierresCR-switch" aria-label="Name Switch" /></li>
+            <li>Operaciones <input type="checkbox" id="OperacionCR-switch" aria-label="Operaciones Switch" /></li>
+        </ul>
+    </div>
+
+    <style>
+        .switch-section ul {
+            margin: 0;
+            padding: 0;
+        }
+
+            .switch-section ul li {
+                margin: 0;
+                padding: 10px 10px 10px 5px;
+                min-height: 28px;
+                line-height: 28px;
+                vertical-align: middle;
+                border-top: 1px solid rgba(128,128,128,.5);
+                text-decoration: none;
+                list-style-type: none;
+                border: 1px solid;
+            }
+
+        .switch-section {
+            min-width: 220px;
+            margin-top: 50px;
+            padding: 0;
+        }
+
+            .switch-section ul li .km-switch {
+                float: right;
+            }
+
+        .settings-head {
+            height: 56px;
+            background: url('../../Content/images/logo-monibyte.png') no-repeat 20px 50% #2db245;
+            border: 1px solid;
+            text-align: center;
+            line-height: 50px;
+            font-weight: 900;
+            font-size: 11px;
+        }
+    </style>
+</div>
+
+<div id="treeviewContent" class="col-xs-7" style="margin-top: 50px;"></div>
+<div class="clearfix"></div>
+
+<div class="box col-xs-12">
+    <div class="console">
+    </div>
+</div>
+<div class="clearfix"></div>
+

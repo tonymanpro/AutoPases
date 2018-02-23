@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<QUERIES>
+  <SqlProyectosActivos>
+    SELECT
+    IdProyecto,
+    Proyecto,
+    Bucket,
+    PublishFile,
+    DownloadPath,
+    TargetPath,
+    BackUpPath,
+    SiteName,
+    p.IdEntidad,
+    IdCompilar,
+    TreeView,
+    e.Descripcion Entidad
+    FROM Global.
+    GB_Proyectos p,
+    Global.GB_Entidad e
+    WHERE
+    p.IdEntidad = e.IdEntidad
+  </SqlProyectosActivos>
+</QUERIES>

@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoPases", "AutoPases\AutoPases.csproj", "{C6661C5F-E483-4552-AB6E-99E73D5C3CF5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InvokeConsole", "InvokeConsole\InvokeConsole.csproj", "{23FCB571-CF4A-403A-B6E2-3D8B6DB3BE17}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C6661C5F-E483-4552-AB6E-99E73D5C3CF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6661C5F-E483-4552-AB6E-99E73D5C3CF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6661C5F-E483-4552-AB6E-99E73D5C3CF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6661C5F-E483-4552-AB6E-99E73D5C3CF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23FCB571-CF4A-403A-B6E2-3D8B6DB3BE17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23FCB571-CF4A-403A-B6E2-3D8B6DB3BE17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23FCB571-CF4A-403A-B6E2-3D8B6DB3BE17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23FCB571-CF4A-403A-B6E2-3D8B6DB3BE17}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {38DC3AE4-A759-4396-997D-C6718B026D79}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,80 @@
+﻿@{
+    ViewBag.Title = "Monibyte Deployment";
+}
+
+<link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.1.117/styles/kendo.mobile.all.min.css">
+<link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.1.117/styles/kendo.default.mobile.min.css">
+<link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.1.117/styles/kendo.rtl.min.css">
+
+<div id="example">
+    <div class="demo-section">
+        <div class="settings-head">MONIBYTE DEPLOY MANAGER</div>
+        <ul>
+            <li>Core Costa Rica <input type="checkbox" id="notifications-switch" aria-label="Notifications Switch" checked="checked" /></li>
+            <li>TransacCosta Rica <input id="mail-switch" aria-label="Mail Switch" /></li>
+            <li>Admin Costa Rica <input id="visible-switch" aria-label="Visible Switch" /></li>
+            <li>Cierres Costa Rica <input id="name-switch" aria-label="Name Switch" /></li>
+            <li>Operaciones <input id="operaciones-switch" aria-label="Name Switch" /></li>
+        </ul>
+    </div>
+
+    <style>
+        .demo-section ul {
+            margin: 0;
+            padding: 0;
+        }
+
+            .demo-section ul li {
+                margin: 0;
+                padding: 10px 10px 10px 5px;
+                min-height: 28px;
+                line-height: 28px;
+                vertical-align: middle;
+                border-top: 1px solid rgba(128,128,128,.5);
+                text-decoration: none;
+                list-style-type: none;
+                border: 1px solid;
+            }
+
+        .demo-section {
+            min-width: 220px;
+            margin-top: 50px;
+            padding: 0;
+        }
+
+            .demo-section ul li .km-switch {
+                float: right;
+            }
+
+        .settings-head {
+            height: 56px;
+            background: url('../../Content/images/logo-monibyte.png') no-repeat 20px 50% #2db245;
+            border: 1px solid;
+            text-align: center;
+            line-height: 50px;
+            font-weight: 900;
+        }
+    </style>
+</div>
+
+<script>
+    $(function () {
+        $("#notifications-switch").kendoMobileSwitch({
+            checked: false
+        });
+        $("#mail-switch").kendoMobileSwitch({
+            checked: false/*,
+            onLabel: "YES",
+            offLabel: "NO"*/
+        });
+        $("#visible-switch").kendoMobileSwitch({
+            checked: false
+        });
+        $("#name-switch").kendoMobileSwitch({
+            checked: false
+        });
+        $("#operaciones-switch").kendoMobileSwitch({
+            checked: false
+        });
+    });
+</script>
