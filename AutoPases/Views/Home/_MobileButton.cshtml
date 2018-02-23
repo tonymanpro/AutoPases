@@ -1,30 +1,81 @@
 ﻿@using AutoPases.Models
-@model List<ModProyectosActivos>
+@model IEnumerable<ModProyectosActivos>
 
-
-@{
-    ViewBag.Title = "Monibyte Deployment";
-}
 
 <div class="switch-section">
     <div class="settings-head">MONIBYTE DEPLOY MANAGER</div>
     <ul>
-        @foreach(var item in Model)
+        @foreach (var item in Model)
         {
-        <li>@item.Proyecto <input type="checkbox" id="@item.Proyecto " aria-label="Notifications Switch" /></li>
+            <li>@item.Proyecto <input type="checkbox" id="@item.Proyecto" aria-label="Notifications Switch" /></li>
         }
     </ul>
 </div>
 
 
 <script>
+    var jsonData = @Html.Raw(Json.Encode(@Model));
     $(function () {
-        var jsonObj = { checked: false };
-        var jsonData = JSON.stringify("@Model");
-
         $.each(jsonData, function (index, value) {
-            $("#"+value.Proyecto).kendoMobileSwitch(jsonObj);
+            $("#" + value.Proyecto).kendoMobileSwitch({ checked: false });
         });
+    });
 
+    $(document).ready(function () {
+        $("span.k-switch").on("click", function () {
+            var inputID = $(this).find("input[type='checkbox']").attr("id");
+            var switchInstance = $("#" + inputID).data("kendoMobileSwitch");
+            var statusValue = switchInstance.check();
+            if (!statusValue) {
+                kendoConsole.log("Getting ::" + inputID + " Stages");
+               $monibyte.executeAjax({
+                    actionUrl: "@Url.Action("GetTreeView")",
+                    jsonData: {
+                        viewID: inputID
+                    },
+                    targetId: "treeviewContent"
+                });
+            }
+        });
     });
 </script>
+
+
+<style>
+    .switch-section ul {
+        margin: 0;
+        padding: 0;
+    }
+
+        .switch-section ul li {
+            margin: 0;
+            padding: 10px 10px 10px 5px;
+            min-height: 28px;
+            line-height: 28px;
+            vertical-align: middle;
+            border-top: 1px solid rgba(128,128,128,.5);
+            text-decoration: none;
+            list-style-type: none;
+            border: 1px solid;
+        }
+
+    .switch-section {
+        min-width: 220px;
+        margin-top: 50px;
+        padding: 0;
+    }
+
+        .switch-section ul li .km-switch {
+            float: right;
+        }
+
+    .settings-head {
+        height: 56px;
+        background: url('../../Content/images/logo-monibyte.png') no-repeat 20px 50% #2db245;
+        border: 1px solid;
+        text-align: center;
+        line-height: 50px;
+        font-weight: 900;
+        font-size: 11px;
+    }
+</style>

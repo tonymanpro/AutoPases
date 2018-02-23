@@ -303,7 +303,7 @@
     <Content Include="Views\Shared\EditorTemplates\String.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Time.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Url.cshtml" />
-    <Content Include="Views\Home\_treeviewCoreCR.cshtml" />
+    <Content Include="Views\Home\_Treeview.cshtml" />
     <Content Include="Views\Home\_MobileButton.cshtml" />
   </ItemGroup>
   <ItemGroup>

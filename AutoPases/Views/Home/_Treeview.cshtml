@@ -1,0 +1,59 @@
+﻿@using AutoPases.Models
+@model IEnumerable<ModProyectosActivos>
+
+
+<script type="text/javascript">
+    function onSelect(e) {
+        kendoConsole.log("Selecting: " + this.text(e.node));
+    }
+
+    function onCheck(e) {
+        kendoConsole.log("Checkbox changed :: " + this.text(e.node));
+    }
+
+    function onChange(e) {
+        kendoConsole.log("Selection changed");
+    }
+
+    function checkManager(element, state) {
+        //cambiar el valor de un check
+        var treeview = $("#treeview").data("kendoTreeView");
+        var item = treeview.findByText(element);
+        kendoConsole.log("Checkbox changed :: " + element);
+        treeview.dataItem(item).set("checked", state);
+    }
+
+    $(document).ready(function () {
+        //$("input[value='Steps']").attr("disabled", "disabled");
+        //GCloudDownload("GCloud Download");
+    });
+</script>
+
+<script id="treeview-template" type="text/kendo-ui-template">
+    #: item.text #
+    # if (!item.items) { #
+    <a class='k-icon k-i-close-outline' href='\#'></a>
+    # } #
+</script>
+
+<div id="treeview"></div>
+
+
+<script>
+    var jsonData = @Html.Raw(Json.Encode(@Model));
+    var treeViewData = JSON.parse(jsonData[0].TreeView);
+    var dsTreeView = [];
+     $.each(treeViewData.treeView, function (index, value) {
+         dsTreeView[index] = {id: index, text: value}
+    });
+    $("#treeview").kendoTreeView({
+        loadOnDemand: false,
+        checkboxes: {
+            checkChildren: true
+        },
+        dataSource: dsTreeView,
+        select: onSelect,
+        check: onCheck,
+        change: onChange,
+    });
+</script>

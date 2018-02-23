@@ -13,6 +13,7 @@ using System.Threading;
 using System.Data.SqlClient;
 using AutoPases.Integracion;
 using Monibyte.Arquitectura.Comun.Nucleo.Sesion;
+using AutoPases.Models;
 
 namespace AutoPases.Controllers
 {
@@ -21,7 +22,7 @@ namespace AutoPases.Controllers
         public ActionResult Index()
         {
             var connString = AppConfiguracion.Instance.ConnectionString;
-            var proyectos = new List<Models.ModProyectosActivos>();
+            var proyectos = new List<ModProyectosActivos>();
             using (SqlConnection conn = new SqlConnection(connString))
             {
                 conn.Open();
@@ -31,7 +32,7 @@ namespace AutoPases.Controllers
                 SqlDataReader data = commd.ExecuteReader();
                 while (data.Read())
                 {
-                    var archivo = data.CreateItemFromReader<Models.ModProyectosActivos>(); 
+                    var archivo = data.CreateItemFromReader<ModProyectosActivos>(); 
                     proyectos.Add(archivo);
                 }
             }
@@ -39,9 +40,18 @@ namespace AutoPases.Controllers
             return View(proyectos);
         }
 
+        public ActionResult GetMobileSwitch(string projectName)
+        {
+            var projects = InfoSesion.ObtenerSesion<List<ModProyectosActivos>>("ProyectosActivos");
+            var model = projects.Where(x => x.Entidad == projectName);
+            return PartialView("_MobileButton", model);
+        }
+
         public ActionResult GetTreeView(string viewID)
         {
-            return PartialView(string.Format("_treeview{0}", viewID));
+            var projects = InfoSesion.ObtenerSesion<List<ModProyectosActivos>>("ProyectosActivos");
+            var model = projects.Where(x => x.Proyecto == viewID);
+            return PartialView("_Treeview", model);
         }
 
         public async Task<JsonResult> GCloudDownloadAsync(string command)
