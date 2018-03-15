@@ -13,6 +13,8 @@ namespace AutoPases
             bundles.IgnoreList.Ignore("*-vsdoc.js");
             bundles.IgnoreList.Ignore("*.debug.js", OptimizationMode.WhenEnabled);
 
+            BundleTable.EnableOptimizations = false;
+
             var jqueryBundle = new ScriptBundle("~/scripts/jquery")
                         .Include("~/Scripts/jquery-{version}.js",
                         "~/Scripts/bootstrap.js",

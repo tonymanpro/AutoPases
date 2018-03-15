@@ -19,32 +19,27 @@
         //cambiar el valor de un check
         var treeview = $("#treeview").data("kendoTreeView");
         var item = treeview.findByText(element);
-        kendoConsole.log("Checkbox changed :: " + element);
-        treeview.dataItem(item).set("checked", state);
+        if (item) {
+            kendoConsole.log("Checkbox changed :: " + element);
+            treeview.dataItem(item).set("checked", state);
+        }
     }
-
     $(document).ready(function () {
-        //$("input[value='Steps']").attr("disabled", "disabled");
-        //GCloudDownload("GCloud Download");
+        $("#rollback").on("click", function () {
+            window.RollBack();
+        });
     });
 </script>
-
-<script id="treeview-template" type="text/kendo-ui-template">
-    #: item.text #
-    # if (!item.items) { #
-    <a class='k-icon k-i-close-outline' href='\#'></a>
-    # } #
-</script>
-
 <div id="treeview"></div>
-
+<div class="clearfix"></div>
+<input type="button" value="RollBack" class="btn btn-block" id="rollback" style="display:none;" />
 
 <script>
     var jsonData = @Html.Raw(Json.Encode(@Model));
     var treeViewData = JSON.parse(jsonData[0].TreeView);
     var dsTreeView = [];
-     $.each(treeViewData.treeView, function (index, value) {
-         dsTreeView[index] = {id: index, text: value}
+    $.each(treeViewData.treeView, function (index, value) {
+        dsTreeView[index] = {id: index, text: value}
     });
     $("#treeview").kendoTreeView({
         loadOnDemand: false,
@@ -56,4 +51,7 @@
         check: onCheck,
         change: onChange,
     });
+    setTimeout(function(){
+        window[treeViewData.treeView[0]](jsonData[0],0);
+    }, 1000);
 </script>

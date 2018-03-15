@@ -5,7 +5,7 @@
     ViewBag.Title = "Monibyte Deployment";
     var entitys = Model.GroupBy(x => x.Entidad);
 }
-
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <style>
     .navbar-inverse {
         background-color: #222222;
@@ -19,11 +19,12 @@
 </style>
 
 <script>
+    _objectTemp = {};
     $(document).ready(function () {
         kendoConsole.log("Starting ...");
         $("a.activeSwitch").on("click", function () {
             var projectName = $(this).attr("value");
-             $monibyte.executeAjax({
+            $monibyte.executeAjax({
                 actionUrl: "@Url.Action("GetMobileSwitch")",
                 jsonData: { projectName: projectName },
                 targetId: "switchSection",
@@ -34,16 +35,16 @@
         });
     });
 
-    function GCloudDownload() {
+    function GCloudDownload(object, index) {
         $monibyte.executeAjax({
-            actionUrl: "@Url.Action("GCloudDownloadAsyn")",
+            actionUrl: "@Url.Action("GCloudDownloadAsync")",
             jsonData: { command: "ping 10.80.1.46" }, //{ command: "gsutil cp gs://Travis_CI/CoreCR Desktop"},
-             callback: function (data) {
+            callback: function (data) {
                 if (data.result) {
                     kendoConsole.specialEvent("*** GCloud Download Successful ***");
                     kendoConsole.log(data.response);
-                    checkManager("GCloud Download", true)
-                    StopSite();
+                    checkManager("GCloudDownload", true)
+                    window[treeViewData.treeView[object, index + 1]](object, index + 1);
                 }
             },
             error: function pruebaError() {
@@ -52,29 +53,39 @@
         });
     }
 
-    function StopSite() {
+    function StopSite(object, index) {
+        var treeViewData = JSON.parse(object.TreeView);
         $monibyte.executeAjax({
-            actionUrl: "@Url.Action("StopSiteAsyn")",
+            actionUrl: "@Url.Action("StopSiteAsync")",
+            jsonData: { pageSite: object.SiteName },
             callback: function (data) {
                 if (data) {
                     kendoConsole.specialEvent("*** Stop Site Successful ***");
-                    checkManager("Stop Site", true)
-                    CreateBackUp();
+                } else {
+                    kendoConsole.specialEvent("***Site Stoped Or Not Exist ***");
                 }
+                checkManager("StopSite", true)
+                window[treeViewData.treeView[object, index + 1]](object, index + 1);
             },
             error: function pruebaError() {
                 kendoConsole.error("Stop Site Error");
             }
         });
     }
-    function CreateBackUp() {
+    function CreateBackUp(object, index) {
+        var treeViewData = JSON.parse(object.TreeView);
         $monibyte.executeAjax({
-            actionUrl: "@Url.Action("CreateBackUpAsyn")",
+            actionUrl: "@Url.Action("CreateBackUpAsync")",
+            jsonData: {
+                sourcePath: object.TargetPath,
+                targetPath: object.BackUpPath,
+                projectName: object.SiteName
+            },
             callback: function (data) {
                 if (data) {
                     kendoConsole.specialEvent("*** Create BackUp Successful ***");
-                    checkManager("Create BackUp", true)
-                    PublishSite();
+                    checkManager("CreateBackUp", true)
+                    window[treeViewData.treeView[object, index + 1]](object, index + 1);
                 }
             },
             error: function pruebaError(error) {
@@ -83,39 +94,89 @@
             }
         });
     }
-    function PublishSite() {
+    function PublishSite(object, index) {
+        _objectTemp = object;
+        var treeViewData = JSON.parse(object.TreeView);
+        var jsonData = {};
+        if (object.PublishFile != null) {
+            jsonData.publishFiles = object.PublishFile;
+            jsonData.sourcePath = object.DownloadPath;
+            jsonData.backUp = object.BackUpPath;
+            jsonData.targetPath = object.TargetPath;
+            jsonData.solution = treeViewData.ProjectName
+            jsonData.siteName = object.SiteName;
+        } else {
+            jsonData.targetPath = object.TargetPath;
+            jsonData.sourcePath = object.DownloadPath;
+        }
         $monibyte.executeAjax({
-            actionUrl: "@Url.Action("PublishSiteAsyn")",
+            actionUrl: "@Url.Action("PublishSiteAsync")",
+            jsonData: jsonData,
             callback: function (data) {
-                if (data) {
+                if (data.result) {
                     kendoConsole.specialEvent("*** Publish Site Successful ***");
-                    checkManager("Publish Site", true)
-                    StartSite();
+                    kendoConsole.log(data.response);
+                    checkManager("PublishSite", true)
+                    window[treeViewData.treeView[object, index + 1]](object, index + 1);
+                } else {
+                    kendoConsole.error(data.response);
+                    kendoConsole.error("Publish Site Error");
+                    $("#rollback").toggle();
                 }
             },
             error: function pruebaError(error) {
                 kendoConsole.error(error.response);
                 kendoConsole.error("Publish Site Error");
+                $("#rollback").toggle();
             }
         });
     }
-    function StartSite(dataItem) {
+    function RollBack() {
+        var jsonData = {};        
+        jsonData.targetPath = _objectTemp.TargetPath;
+        jsonData.sourcePath = _objectTemp.BackUpPath;
+        jsonData.siteName = _objectTemp.SiteName;
+        
         $monibyte.executeAjax({
-            actionUrl: "@Url.Action("StartSiteAsyn")",
-            jsonData: dataItem,
+            actionUrl: "@Url.Action("RollBackAsync")",
+            jsonData: jsonData,
             callback: function (data) {
-                if (data) {
-                    kendoConsole.specialEvent("*** Start Site Successful ***");
-                    checkManager("Start Site", true)
+                if (data.result) {
+                    kendoConsole.specialEvent("*** RollBack Site Successful ***");
+                } else {
+                    kendoConsole.error(data.response);
+                    kendoConsole.error("RollBack Error");
                 }
             },
-            error: function pruebaError() {
+            error: function pruebaError(error) {
+                kendoConsole.error(error.response);
+                kendoConsole.error("RollBack Error");
+            }
+        });
+    }
+
+    function StartSite(object, index) {
+        $monibyte.executeAjax({
+            actionUrl: "@Url.Action("StartSiteAsync")",
+            callback: function (data) {
+                if (data.result) {
+                    kendoConsole.specialEvent("*** Start Site Successful ***");
+                    checkManager("StartSite", true)
+                    kendoConsole.log(data.response);
+                } else{
+                    kendoConsole.error("Start Site Error");
+                    kendoConsole.error(data.response);
+                }
+            },
+            error: function pruebaError(e) {          
                 kendoConsole.error("Start Site Error");
             }
         });
+        $("#rollback").toggle();
     }
 </script>
 
+<input type="hidden" value="" id="siteName" name="siteName" />
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -135,12 +196,12 @@
                 {
                     <li class="active">
                         @Html.ActionLink(item.First().Entidad,
-                             "Index", "Home", new
-                             {
-                                 @value = item.First().Entidad,
-                                 @href = "#",
-                                 @class = "activeSwitch"
-                             })
+                                  "Index", "Home", new
+                                  {
+                                      @value = item.First().Entidad,
+                                      @href = "#",
+                                      @class = "activeSwitch"
+                                  })
                     </li>
                 }
             </ul>
@@ -148,8 +209,8 @@
     </div><!-- /.container-fluid -->
 </nav>
 
-<div class="col-xs-5" id="switchSection"></div>
-<div id="treeviewContent" class="col-xs-7" style="margin-top: 50px;"></div>
+<div class="col-lg-5 col-xs-12" id="switchSection"></div>
+<div id="treeviewContent" class="col-lg-7 col-xs-12" style="margin-top: 50px;"></div>
 <div class="clearfix"></div>
 <div class="box col-xs-12">
     <div class="console">

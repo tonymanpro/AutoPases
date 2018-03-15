@@ -103,7 +103,6 @@ $monibyte = {
         }, 0);
     },
     executeAjax: function (settings) {
-        debugger;
         var _defaults = {
             name: "executeAjax",
             httpMethod: "POST",
@@ -172,7 +171,6 @@ $monibyte = {
                     } else if (jqXHR.status == 404) {
                         alert('Requested page not found [404]');
                     } else if (jqXHR.status == 500) {
-                        debugger;
                         alert('Internal Server Error [500].');
                     } else if (textStatus === 'parsererror') {
                         alert('Requested JSON parse failed.');
@@ -689,7 +687,6 @@ jQuery.fn.sortElements = (function () {
 
 
 $(document).on("mousedown", " .k-header .k-header-column-menu", function (e) {
-    debugger;
     var fieldname = this.parentNode.getAttribute("data-index");
 
     if ($("th[data-index=" + fieldname + "]").hasClass("ColumnaSeleccionada"))//tiene la clase que se la quite

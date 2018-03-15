@@ -37,9 +37,10 @@ textarea {
 }
 
 @media (max-width: 600px) {
-    div.k-treeview {
-        float: right;
-        right: -40px;
-        margin-right: -69px;
+    #treeviewContent {
+        margin-top: 0px !important;
+    }
+    input{
+        max-width:100%;
     }
 }

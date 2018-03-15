@@ -23,6 +23,7 @@
 
     $(document).ready(function () {
         $("span.k-switch").on("click", function () {
+            debugger;
             var inputID = $(this).find("input[type='checkbox']").attr("id");
             var switchInstance = $("#" + inputID).data("kendoMobileSwitch");
             var statusValue = switchInstance.check();
